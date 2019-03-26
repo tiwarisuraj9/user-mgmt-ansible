@@ -1,0 +1,40 @@
+## Playbook to add/revoke user to multiple servers
+---
+- name: dev_users
+  hosts: dev_servers
+  become_user: root
+  become: yes
+  vars:
+    admin_group: 'ubuntu'
+    developer_list:
+      - name: "suraj"
+        username: "suraj"
+        keys:
+          active:
+            - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCkEAkZhTRn8u45SDM5kYspa1DzGClST3tnjUk4NfW7rf7V9P7GYQp7o16HiQl5jJqpQXZUJIVnzyJzMnAPzA7CzxkkHVryO22BOjfsZ1oMDxOHS/oDj87s/azINSONXDkItU8QqAI4fZRrmpfN0lUMFDtnk4BBiO0JVk74FXKDse6Df2Q4UqFrtgkEjjdGuGFxtZtK8PBaIfCuZqMpeUlFedCVOSlwh0tWxUVSWIKLduPgbcXMF8D9YjAThRTUYHpR84nTOqFOk6Uws5nkh4Do881qnbX1+on8Pif5W7OsALLRSaAzN/R9cX3kb91PTPw3V8JcjUfAet6eFbf9qXy3 suraj@Suraj"
+        shell: "/bin/bash"
+        state: absent
+
+  tasks:
+
+  - name: User Setup on all Servers
+    user:
+      name: "{{ item.username }}"
+      state: "{{ item.state | default('present') }}"
+      shell: "{{ item.shell | default('/bin/bash') }}"
+      group: "{{ admin_group }}"
+      remove: yes
+    when: item.username is defined
+    with_items:
+      - "{{ developer_list }}"
+
+  - name: Adding SSH-keys to users
+    authorized_key:
+      user: "{{ item.0.username }}"
+      key: "{{ item.1 }}"
+    with_subelements:
+      - "{{ developer_list }}"
+      - keys.active
+      - flags:
+        skip_missing: True
+    when: item.0.state != "absent"
