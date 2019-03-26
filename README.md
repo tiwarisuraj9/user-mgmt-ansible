@@ -1,4 +1,4 @@
-# User mgmt. on multiple servers. ( Access/Revoke )
+# User mgmt. on multiple servers. ( Access/Revoke SSH)
 
 This is ansible playbook for giving access or to revoke access of multiple servers for dev users 
 
