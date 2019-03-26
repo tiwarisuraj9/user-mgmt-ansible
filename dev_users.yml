@@ -5,15 +5,31 @@
   become_user: root
   become: yes
   vars:
-    admin_group: 'ubuntu'
+    group: 'ubuntu'
     developer_list:
-      - name: "suraj"
-        username: "suraj"
+      - name: "dev1"
+        username: "dev1"
         keys:
           active:
-            - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCkEAkZhTRn8u45SDM5kYspa1DzGClST3tnjUk4NfW7rf7V9P7GYQp7o16HiQl5jJqpQXZUJIVnzyJzMnAPzA7CzxkkHVryO22BOjfsZ1oMDxOHS/oDj87s/azINSONXDkItU8QqAI4fZRrmpfN0lUMFDtnk4BBiO0JVk74FXKDse6Df2Q4UqFrtgkEjjdGuGFxtZtK8PBaIfCuZqMpeUlFedCVOSlwh0tWxUVSWIKLduPgbcXMF8D9YjAThRTUYHpR84nTOqFOk6Uws5nkh4Do881qnbX1+on8Pif5W7OsALLRSaAzN/R9cX3kb91PTPw3V8JcjUfAet6eFbf9qXy3 suraj@Suraj"
+            - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCkEAkZhTRn8uWQVDUQWVDYQWFD23Q4NfW7rf7V9P7GYQp7o16HiQl5jJqpQXZUJIVnzyJzMnAPzA7CzxkkHVryO22BOjfsZ1oMDxOHS/oDj87s/azINSONXDkItU8QqAI4fZRrmpfN0lUMFDtnk4BBiO0JVk74FXKDse6Df2Q4UqFrtgkEjjdGuGFxtZtK8PBaIfCuZqMpeUlFedCVOSlwh0tWxUVSWIKLduPgbcXMF8D9YjAThRTUYHpR84nTOqFOk6Uws5nkh4Do881qnbX1+on8Pif5W7OsALLRSaAzN/R9cX3kb91PTPw3V8JcjUfAet6eFbf9qXy3 suraj@Suraj"
         shell: "/bin/bash"
-        state: absent
+        state: present
+
+      - name: "dev2"
+        username: "dev2"
+        keys:
+          active:
+            - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3d/vSaRTYBPbhASHFCVEQUHFVIQWGDYFIHWQVFIHYQWFliRdM9lYsj6wfK8FszIc4KehxCE9qmr/cgZ81B7wxrNM7qU9CXpffokvMS2l+5QCl9P3IJWZgH3AOZyvVWy/XhhcER99XTC1DGnYu/WNyIdfOv+oq5EKnsaAytfcUOspWdFAH5Fpvv96Z77xMAh8Rj26PVAIW7x3bzomZ+27+0uJQg0UdZWUZ1odTt/kLYCcIu8BqHleQrrzN+HrWI2RN4nwBAx49n2QH7xOYM2tDsPveEnWDKEtEpvzCLuD abc@abc"
+        shell: "/bin/bash"
+        state: present
+
+      - name: "dev3"
+        username: "dev3"
+        keys:
+          active:
+            - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+2Pdi+aAwYiE3078bKt9qV7poIKfbOVr+1Lc23UlPX4W7M18ykyyrtj4twewhea8zv/wxBoU47HAlAkrB9VpQH+ukxaZUrMIyZGkz4o6zIcIIs8XWMvBkzaY9yoNTeAxqa17m0glZeFauVZsmczDTan9VUIvVHHe5H29pywhUOWyQ3kE0VnmElsG6zP7hwD5rJ8xK9jv//GwctVKLSljqaTqF3vZSTDfEROncuZyzOqMI5m+vbE7RKeYhJ9OjoS9ZvwCFhsdpZrJkSEt2yZbEYFVtoYvQZYA9qQ5pkCp8uPyvZHWw9jyXQMGfIaOjaGDljPIpWtm4tpm4QMPwt suraj@ip-172-31-15-169"
+        shell: "/bin/bash"
+        state: present
 
   tasks:
 
@@ -22,13 +38,13 @@
       name: "{{ item.username }}"
       state: "{{ item.state | default('present') }}"
       shell: "{{ item.shell | default('/bin/bash') }}"
-      group: "{{ admin_group }}"
+      group: "{{ group }}"
       remove: yes
     when: item.username is defined
     with_items:
       - "{{ developer_list }}"
 
-  - name: Adding SSH-keys to users
+  - name: Adding ssh-keys to users
     authorized_key:
       user: "{{ item.0.username }}"
       key: "{{ item.1 }}"
