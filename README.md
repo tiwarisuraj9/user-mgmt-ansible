@@ -1,6 +1,6 @@
 # User mgmt. on multiple servers. ( Access/Revoke SSH)
 
-This is ansible playbook for giving access or to revoke access of multiple servers for dev users 
+This is ansible playbook for giving access or to revoke access of user for multiple servers
 
 
 ## Playbook-
